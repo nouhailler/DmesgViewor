@@ -11,3 +11,7 @@ build/
 .vscode/
 *.swp
 *.swo
+
+# Build artifacts
+deb-build/
+*.deb
