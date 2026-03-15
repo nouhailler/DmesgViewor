@@ -1,4 +1,4 @@
-<![CDATA[<div align="center">
+<div align="center">
 
 # 🐧 DMESGVIEWOR
 
@@ -74,7 +74,7 @@ single desktop application built with **Python** and **PyQt6**.
 │  ☑ info      │                                              │
 │  ☑ debug     │                                              │
 ├──────────────┴──────────────────────────────────────────────┤
-│  📊 Logs: 4821/4821  |  📡 Follow: OFF  |  🔑 Permissions: OK│
+│  📊 Logs: 4821/4821  |  📡 Follow: OFF  |  🔑 Perms: OK    │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -170,8 +170,6 @@ sudo usermod -aG adm $USER
 
 > ⚠️ **Log out and log back in** for the group change to take effect.
 
----
-
 ### 🔐 Option B — Enter your sudo password in the application *(built-in)*
 
 When DMESGVIEWOR detects a permission error, it automatically shows a password
@@ -180,15 +178,11 @@ dialog. Enter your sudo password to authenticate for the current session.
 > 🛡️ The password is stored **in memory only** and discarded when the
 > application closes. It is never written to disk.
 
----
-
 ### 🚀 Option C — Run with pkexec
 
 ```bash
 pkexec python3 main.py
 ```
-
----
 
 ### ⚠️ Option D — Disable the restriction system-wide *(not recommended)*
 
@@ -196,7 +190,6 @@ pkexec python3 main.py
 sudo sysctl kernel.dmesg_restrict=0
 ```
 
-> This affects all users and is not persistent across reboots.
 > To make it persistent, add `kernel.dmesg_restrict=0` to `/etc/sysctl.conf`.
 
 ---
@@ -218,11 +211,7 @@ The interface is organised into four areas:
 └─────────────────────────────────────────────────────────────┘
 ```
 
----
-
 ### 🔧 Toolbar
-
-Located at the top of the window. Contains all action buttons and controls.
 
 | Control | 📝 Description |
 |---|---|
@@ -237,8 +226,6 @@ Located at the top of the window. Contains all action buttons and controls.
 | **Regex** checkbox | Interpret the search field as a regular expression |
 | **Case** checkbox | Make the search case-sensitive |
 
----
-
 ### 🎛️ Filter Panel
 
 Located on the **left side** of the window. Two independent filters:
@@ -252,12 +239,9 @@ multiple facilities. If nothing is selected, all facilities are shown.
 > 💡 The Filter Panel and the Search bar are **combined**: an entry must match
 > **both** the level/facility selection **and** the search text to appear.
 
----
-
 ### 📋 Log Table
 
-A scrollable, sortable table of kernel log entries.
-Click any column header to sort by that column.
+A scrollable, sortable table. Click any column header to sort.
 
 | Column | 📝 Content |
 |---|---|
@@ -267,14 +251,10 @@ Click any column header to sort by that column.
 | 🔀 **Source** | `dmesg` or `journalctl` |
 | 💬 **Message** | The raw kernel log message |
 
----
-
 ### 📈 Timeline Tab
 
 A graphical histogram showing log frequency per minute with three colour-coded
 series. Supports zoom, pan and time-window selection to filter the log table.
-
----
 
 ### 🚨 Detected Issues Tab
 
@@ -286,8 +266,6 @@ Double-click any issue to jump to the corresponding log entry.
 ## 📖 Feature Reference
 
 ### 🎨 Log Display and Colorization
-
-Every row in the log table is coloured according to its severity level:
 
 | Level | 🔢 Value | 🎨 Background | ✏️ Text | Description |
 |---|:---:|---|---|---|
@@ -306,13 +284,11 @@ Every row in the log table is coloured according to its severity level:
 
 **📍 Location:** Filter Panel → Log Levels section *(left side)*
 
-Eight checkboxes corresponding to the eight kernel severity levels. Filtering
-is applied instantly in memory — **without re-running `dmesg`**.
+Filtering is applied instantly in memory — **without re-running `dmesg`**.
 
 **💡 Example use cases:**
 - Uncheck `debug` and `info` → focus on warnings and above
 - Keep only `err` and `crit` → see only critical errors
-- Keep all levels → full log view
 
 ---
 
@@ -337,9 +313,6 @@ is applied instantly in memory — **without re-running `dmesg`**.
 
 **📍 Location:** Toolbar → Search field
 
-Filters the **Message** column. The search is applied **on top of** the level
-and facility filters — an entry must pass all three to appear.
-
 | Option | 📝 Behaviour |
 |---|---|
 | Plain text | Case-insensitive substring match |
@@ -348,10 +321,10 @@ and facility filters — an entry must pass all three to appear.
 
 **🔎 Regex examples:**
 
-```regex
-usb.*disconnect          # Match "usb" followed by "disconnect"
-(error|fail|denied)      # Match any of the three words
-^\[.*PCIe               # Lines whose message starts with "[" and contains "PCIe"
+```
+usb.*disconnect          Match "usb" followed by "disconnect"
+(error|fail|denied)      Match any of the three words
+^\[.*PCIe               Lines starting with "[" containing "PCIe"
 ```
 
 > ⚠️ **Important:** Search and Console Level are **completely independent**.
@@ -364,15 +337,13 @@ usb.*disconnect          # Match "usb" followed by "disconnect"
 
 **📍 Location:** Toolbar → ▶️ Follow / ⏸️ Pause buttons
 
-Streams new kernel log entries in real-time as they are produced.
-
 | 🔀 Source | ⌨️ Command used |
 |---|---|
 | dmesg buffer | `dmesg -w --json` |
 | journalctl kernel | `journalctl -kf -o json` |
 
-New entries are appended at the bottom and the view scrolls automatically.
-The **Timeline** and **Detected Issues** panels update incrementally.
+New entries are appended at the bottom; the Timeline and Detected Issues panels
+update incrementally.
 
 > 💡 Switching the log source while Follow is active will **automatically stop**
 > the follow session before switching.
@@ -382,13 +353,6 @@ The **Timeline** and **Detected Issues** panels update incrementally.
 ### 🔀 Log Source Selection
 
 **📍 Location:** Toolbar → Source dropdown
-
-| Option | 📝 Description |
-|---|---|
-| 🐧 `dmesg buffer` | Reads the kernel ring buffer via `dmesg --json` |
-| ⚙️ `journalctl kernel` | Reads systemd's persistent journal via `journalctl -k -o json` |
-
-**Key differences:**
 
 | | 🐧 dmesg | ⚙️ journalctl |
 |---|---|---|
@@ -403,8 +367,8 @@ The **Timeline** and **Detected Issues** panels update incrementally.
 
 **📍 Location:** Toolbar → ⟳ Refresh button
 
-Runs a fresh one-shot read of the selected source, replaces the table content
-and updates the Timeline and Detected Issues panels.
+Runs a fresh one-shot read of the selected source and replaces the table
+content. The Timeline and Detected Issues panels are also refreshed.
 
 ---
 
@@ -445,8 +409,8 @@ appear if needed.
 Sets the **kernel console log level** via `dmesg -n <level>`.
 
 > 💡 This is a **kernel parameter**, not an application display filter.
-> It controls which messages the kernel prints to `/dev/console` (the system
-> terminal). It has **no effect** on what DMESGVIEWOR displays.
+> It controls which messages the kernel prints to `/dev/console`.
+> It has **no effect** on what DMESGVIEWOR displays.
 
 | 🎚️ Dropdown | ⌨️ Sent | 📝 Effect |
 |---|---|---|
@@ -465,8 +429,6 @@ Sets the **kernel console log level** via `dmesg -n <level>`.
 
 **📍 Location:** Timeline tab
 
-A histogram showing log frequency per one-minute bucket, with three series:
-
 | 🎨 Colour | 📊 Series |
 |---|---|
 | 🔴 Red | Errors and above (emerg, alert, crit, err — levels 0–3) |
@@ -483,16 +445,13 @@ A histogram showing log frequency per one-minute bucket, with three series:
 | ▶️ **Apply time window** | Filter the log table to the selected range |
 | ✖️ **Clear selection** | Remove the time filter and restore all entries |
 
-> 📦 **Requirement:** The Timeline tab requires the `pyqtgraph` package.
-> If not installed: `pip install pyqtgraph`
+> 📦 **Requirement:** `pyqtgraph` must be installed — `pip install pyqtgraph`
 
 ---
 
 ### 🚨 Automatic Critical Error Detection
 
 **📍 Location:** Detected Issues tab
-
-DMESGVIEWOR automatically scans all loaded entries for known critical patterns:
 
 | 🚨 Category | 🔍 Pattern | ⚠️ Severity |
 |---|---|:---:|
@@ -528,9 +487,8 @@ DMESGVIEWOR automatically scans all loaded entries for known critical patterns:
 
 **📍 Location:** Toolbar → Source dropdown → `journalctl kernel`
 
-When selected, the application reads from the **systemd journal** instead of
-the dmesg ring buffer. Both sources populate the same table with a **Source**
-column (`dmesg` / `journalctl`), making it easy to correlate events.
+Both sources populate the same table with a **Source** column
+(`dmesg` / `journalctl`), making it easy to correlate events.
 
 **Advantages of journalctl source:**
 - ✅ Persistent across reboots
@@ -626,7 +584,7 @@ DmesgViewor/
 | 🛡️ | Detail |
 |---|---|
 | 📖 | DMESGVIEWOR **reads** the kernel ring buffer but never writes to it unless you explicitly use Clear Buffer or Console Level |
-| 🔑 | The sudo password is stored **in memory only** for the session duration — never written to disk |
+| 🔑 | The sudo password is stored **in memory only** for the session — never written to disk |
 | 🌐 | **No network connection** is made at any time — all operations are local |
 | 🔐 | `dmesg -C` and `dmesg -n` require `CAP_SYSLOG` or root access |
 | ✅ | The recommended setup (`adm` group) grants **read-only** access without elevated privileges at runtime |
@@ -690,4 +648,3 @@ SOFTWARE.
 ⭐ If you find this project useful, please consider giving it a star!
 
 </div>
-]]>
